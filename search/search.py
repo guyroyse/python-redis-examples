@@ -7,7 +7,10 @@ async def main():
 
   redis = await aioredis.create_redis('redis://:foobared@localhost:6379/0', encoding='utf-8')
 
-  await redis.execute('FT.DROP', 'bigfoot:sightings:search')
+  exists = await redis.exists('bigfoot:sightings:search')
+
+  if (exists == True):
+    await redis.execute('FT.DROP', 'bigfoot:sightings:search')
 
   await redis.execute('FT.CREATE', 'bigfoot:sightings:search',
     'SCHEMA', 'title', 'TEXT', 'classification', 'TEXT')
